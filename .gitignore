@@ -1,0 +1,10 @@
+secrets.yaml
+*.log*
+*.db*
+.HA_VERSION
+
+.storage
+.cloud
+.google.token
+
+custom_components

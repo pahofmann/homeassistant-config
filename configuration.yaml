@@ -1,0 +1,58 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Abfall Kalender
+waste_collection_schedule:
+  sources:
+    - name: app_abfallplus_de
+      args:
+        app_id: de.k4systems.awa
+        strasse: !secret street
+        hnr: !secret house_number
+
+sensor:
+  # next collection
+  # Nächste Restmüll-Abholung
+  - platform: waste_collection_schedule
+    name: "Restmüll"
+    value_template: "{% if value.daysTo == 0 %} Heute{% elif value.daysTo == 1 %} Morgen{% else %} in {{value.daysTo}} tagen{% endif %}"
+    types:
+      - Restmüll
+  # Nächste gelber-Sack Abholung
+  - platform: waste_collection_schedule
+    name: "Gelbe Tonne"
+    value_template: "{% if value.daysTo == 0 %} Heute{% elif value.daysTo == 1 %} Morgen{% else %} in {{value.daysTo}} tagen{% endif %}"
+    types:
+      - Kunststoffe & Metalle
+  # Nächste Papiermüll Abholung
+  - platform: waste_collection_schedule
+    name: "Papier"
+    value_template: "{% if value.daysTo == 0 %} Heute{% elif value.daysTo == 1 %} Morgen{% else %} in {{value.daysTo}} tagen{% endif %}"
+    types:
+      - Papier & Pappe
+
+# Recorder
+recorder:
+  purge_keep_days: 30
+  db_url: !secret postgres_url
+  exclude:
+    domains:
+      - automation
+      - update
+    entity_globs:
+      - sensor.sun*
+      - weather.*
+    entities:
+      - sensor.date
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sun.sun # Don't record sun data
+    event_types:
+      - call_service # Don't record service calls
