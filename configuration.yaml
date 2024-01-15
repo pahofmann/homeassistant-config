@@ -56,3 +56,24 @@ recorder:
       - sun.sun # Don't record sun data
     event_types:
       - call_service # Don't record service calls
+
+# Influx DB
+influxdb:
+  api_version: 2
+  ssl: false
+  host: 192.168.2.10
+  port: 8086
+  token: !secret influxdb_token
+  organization: hass
+  bucket: hass
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+  default_measurement: units
+  include:
+    domains:
+      - sensor
+      - binary_sensor
+      - light
+      - climate

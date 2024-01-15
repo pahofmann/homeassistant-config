@@ -1,1 +1,32 @@
-[]
+- id: '1704034226729'
+  alias: Türe Auf -Absyellkammer unten
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: b80065226a6b4a75004ad12dc92efca0
+    entity_id: 7cc3c5c7a3d905144061bab65963b903
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_on
+    device_id: f8decc54b965eba1fc9f7a4fe1089174
+    entity_id: 9141df61e32343b90d55ece472a6d7b9
+    domain: switch
+  mode: single
+- id: '1704034342208'
+  alias: Türe zu - Abstellkammer unten
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: b80065226a6b4a75004ad12dc92efca0
+    entity_id: 7cc3c5c7a3d905144061bab65963b903
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_off
+    device_id: f8decc54b965eba1fc9f7a4fe1089174
+    entity_id: 9141df61e32343b90d55ece472a6d7b9
+    domain: switch
+  mode: single
