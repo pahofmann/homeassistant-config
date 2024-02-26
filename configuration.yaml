@@ -77,3 +77,143 @@ influxdb:
       - binary_sensor
       - light
       - climate
+
+# Heizungssteuerung
+climate:
+  - platform: generic_thermostat
+    name: Untergeschoss
+    heater: switch.thermostat_untergeschoss
+    target_sensor: sensor.thermometer_untergeschoss
+    min_temp: 15
+    max_temp: 26
+    ac_mode: false
+    target_temp: 17
+    cold_tolerance: 0
+    hot_tolerance: 0
+    min_cycle_duration:
+      seconds: 5
+    keep_alive:
+      minutes: 3
+    initial_hvac_mode: "off"
+    away_temp: 16
+    precision: 0.1
+
+# Printers
+# TODOIST PUSH COMMANDS
+rest_command:
+  shutdown_rua:
+    url: "https://rua.hfmnn.com/machine/shutdown"
+    method: post
+  shutdown_timbre:
+    url: "https://timbre.hfmnn.com/machine/shutdown"
+    method: post
+  shutdown_wyndle:
+    url: "https://wyndle.hfmnn.com/machine/shutdown"
+    method: post
+  shutdown_ivory:
+    url: "https://ivory.hfmnn.com/machine/shutdown"
+    method: post
+
+# Reverse Proxy Only
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: 192.168.2.10
+
+# RUA auto shutdown
+input_boolean:
+  shutdown_after_print_rua:
+    name: Turn off rua after print
+    icon: mdi:printer-3d-off
+  shutdown_after_print_timbre:
+    name: Turn off timbre after print
+    icon: mdi:printer-3d-off
+  shutdown_after_print_wyndle:
+    name: Turn off wyndle after print
+    icon: mdi:printer-3d-off
+  shutdown_after_print_ivory:
+    name: Turn off ivory after print
+    icon: mdi:printer-3d-off
+
+# Pi-Hole switch
+command_line:
+  - switch:
+      name: pihole_switch
+      command_on: "curl -X GET 'http://192.168.2.253/admin/api.php?enable&auth=17ffca4e721c26679420804ee08f3de7d894f4f763ff3b4b7ca2fb78638f47bc'"
+      command_off: "curl -X GET 'http://192.168.2.253/admin/api.php?disable=600&auth=17ffca4e721c26679420804ee08f3de7d894f4f763ff3b4b7ca2fb78638f47bc'"
+      command_state: "curl -X GET 'http://192.168.2.253/admin/api.php?status'"
+      value_template: "{{ value_json.status == 'enabled' }}"
+
+# Energy Meters
+utility_meter:
+  rua_energy_daily:
+    source: sensor.rua_energy
+    name: rua energy daily
+    cycle: daily
+  rua_energy_monthly:
+    source: sensor.rua_energy
+    name: rua energy monthly
+    cycle: monthly
+  rua_energy_yearly:
+    source: sensor.rua_energy
+    name: rua energy yearly
+    cycle: yearly
+  timbre_energy_daily:
+    source: sensor.timbre_energy
+    name: timbre energy daily
+    cycle: daily
+  timbre_energy_monthly:
+    source: sensor.timbre_energy
+    name: timbre energy monthly
+    cycle: monthly
+  timbre_energy_yearly:
+    source: sensor.timbre_energy
+    name: timbre energy yearly
+    cycle: yearly
+  ivory_energy_daily:
+    source: sensor.ivory_energy
+    name: ivory energy daily
+    cycle: daily
+  ivory_energy_monthly:
+    source: sensor.ivory_energy
+    name: ivory energy monthly
+    cycle: monthly
+  ivory_energy_yearly:
+    source: sensor.ivory_energy
+    name: ivory energy yearly
+    cycle: yearly
+  wyndle_energy_daily:
+    source: sensor.wyndle_energy
+    name: wyndle energy daily
+    cycle: daily
+  wyndle_energy_monthly:
+    source: sensor.wyndle_energy
+    name: wyndle energy monthly
+    cycle: monthly
+  wyndle_energy_yearly:
+    source: sensor.wyndle_energy
+    name: wyndle energy yearly
+    cycle: yearly
+  servers_energy_daily:
+    source: sensor.servers_energy
+    name: servers energy daily
+    cycle: daily
+  servers_energy_monthly:
+    source: sensor.servers_energy
+    name: servers energy monthly
+    cycle: monthly
+  servers_energy_yearly:
+    source: sensor.servers_energy
+    name: servers energy yearly
+    cycle: yearly
+  # desk_patrick_energy_daily:
+  #   source: sensor.desk_patrick_energy
+  #   name: desk pabi energy daily
+  #   cycle: daily
+  # desk_patrick_energy_monthly:
+  #   source: sensor.desk_pabi_energy
+  #   name: desk pabi energy monthly
+  #   cycle: monthly
+  # desk_patrick_energy_yearly:
+  #   source: sensor.desk_pabi_energy
+  #   name: desk pabi energy yearly
+  #   cycle: yearly

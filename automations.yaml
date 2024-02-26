@@ -30,3 +30,387 @@
     entity_id: 9141df61e32343b90d55ece472a6d7b9
     domain: switch
   mode: single
+- id: '1705320276310'
+  alias: Automatic Backups
+  description: ''
+  use_blueprint:
+    path: jcwillox/automatic_backups.yaml
+    input:
+      enable_yearly: false
+- id: '1650582647506'
+  alias: Shitty Boom Boom (Katzenklo)
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: d05f60cd232f6aedc25695ac1ebf25a0
+    entity_id: binary_sensor.wc_motion_motion
+    domain: binary_sensor
+  condition: []
+  action:
+  - if:
+    - condition: numeric_state
+      entity_id: counter.shittyboomboomcounter
+      above: 2
+    then:
+    - device_id: 2d71088d80892e17b59d9f2adfe14633
+      domain: mobile_app
+      type: notify
+      message: "\U0001F4A9 SHITTY BOOM BOOM \U0001F4A9"
+    - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+      domain: mobile_app
+      type: notify
+      message: "\U0001F4A9 SHITTY BOOM BOOM \U0001F4A9"
+    - service: counter.reset
+      data: {}
+      target:
+        entity_id: counter.shittyboomboomcounter
+    else:
+    - service: counter.increment
+      data: {}
+      target:
+        entity_id: counter.shittyboomboomcounter
+  mode: single
+- id: '1665050566127'
+  alias: Rua Print Finished
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.rua_current_print_state
+    from: printing
+    to: complete
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ✅ RUA Print Finished ✅
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_rua
+      state: 'on'
+    then:
+    - service: rest_command.shutdown_rua
+      data: {}
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_rua
+      state: 'on'
+    then:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: switch.rua
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.shutdown_after_print_rua
+  mode: single
+- id: '1668463952957'
+  alias: Timbre print finished
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.timbre_current_print_state
+    from: printing
+    to: complete
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ✅ TIMBRE Print Finished ✅
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_timbre
+      state: 'on'
+    then:
+    - service: rest_command.shutdown_timbre
+      data: {}
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_timbre
+      state: 'on'
+    then:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: switch.timbre
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.shutdown_after_print_timbre
+  mode: single
+- id: '1677581018153'
+  alias: Timbre error
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.timbre_current_print_state
+    to: error
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ❌ TIMBRE ERROR ❌
+  mode: single
+- id: '1677581048800'
+  alias: Rua error
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.rua_current_print_state
+    to: error
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ❌ RUA ERROR ❌
+  mode: single
+- id: '1677597204946'
+  alias: Timbre paused
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.timbre_current_print_state
+    to: paused
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ⏸ TIMBRE PAUSE ⏸
+  mode: single
+- id: '1677597226144'
+  alias: Rua paused
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.rua_current_print_state
+    to: paused
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ⏸ RUA PAUSE ⏸
+  mode: single
+- id: '1679103803415'
+  alias: Wyndle print finished
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.wyndle_current_print_state
+    to: complete
+    from: printing
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ✅ WYNDLE Print Finished ✅
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_wyndle
+      state: 'on'
+    then:
+    - service: rest_command.shutdown_wyndle
+      data: {}
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_wyndle
+      state: 'on'
+    then:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: switch.wyndle
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.shutdown_after_print_wyndle
+  mode: single
+- id: '1679761392331'
+  alias: WYNDLE Paused
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.wyndle_current_print_state
+    to: paused
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ⏸ WYNDLE PAUSE ⏸
+  mode: single
+- id: '1688146830166'
+  alias: Wyndle Error
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.wyndle_current_print_state
+    to: error
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ❌ WYNDLE ERROR ❌
+  mode: single
+- id: '1688146852450'
+  alias: Ivory Error
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.ivory_current_print_state
+    to: error
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ❌ IVORY ERROR ❌
+  mode: single
+- id: '1688146878488'
+  alias: Ivory Paused
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.ivory_current_print_state
+    to: current print state
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ⏸ IVORY PAUSE ⏸
+  mode: single
+- id: '1688147028309'
+  alias: IVORY Print finished
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.ivory_current_print_state
+    to: complete
+    from: printing
+  condition: []
+  action:
+  - device_id: 46c2686deb6e0dedfa275c0aebc7b266
+    domain: mobile_app
+    type: notify
+    message: ✅ IVORY Print Finished ✅
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_ivory
+      state: 'on'
+    then:
+    - service: rest_command.shutdown_ivory
+      data: {}
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_boolean.shutdown_after_print_ivory
+      state: 'on'
+    then:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: switch.ivory
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.shutdown_after_print_ivory
+  mode: single
+- id: '1708204856562'
+  alias: Licht WC an
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.ture_wc_opening
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: switch.licht_wc_switch_0
+    state: 'off'
+  action:
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.licht_wc_switch_0
+  mode: single
+- id: '1708204947093'
+  alias: Licht WC aus
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.ture_wc_opening
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: switch.licht_wc_switch_0
+    state: 'on'
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id: switch.licht_wc_switch_0
+    data: {}
+  mode: single
